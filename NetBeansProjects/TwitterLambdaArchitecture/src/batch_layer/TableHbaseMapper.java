@@ -34,7 +34,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class TableHbaseMapper extends TableMapper<Text, Text> {
     private final static IntWritable one = new IntWritable(1);
-    //private CompositeGroupKey tweetlabel = new CompositeGroupKey();
     private HashMap<String, IntWritable> map = new HashMap<>();
     private Text word = new Text();
     private IntWritable label = new IntWritable(1);
@@ -44,13 +43,11 @@ public class TableHbaseMapper extends TableMapper<Text, Text> {
     private Text query = new Text();
 //    private Table table;
     private static final Logger logger = LogManager.getLogger(TableHbaseMapper.class);
-    private static long timestamp;
-
+    
     
     @Override
     protected void setup(Context context) throws IOException, InterruptedException{
-            super.setup(context); //To change body of generated methods, choose Tools | Templates.
-            timestamp=new Timestamp(System.currentTimeMillis()).getTime();
+            super.setup(context); //To change body of generated methods, choose Tools | Templates
     }
 
     /*
@@ -116,20 +113,12 @@ public class TableHbaseMapper extends TableMapper<Text, Text> {
     context.write(word, label);
     }
     }*/
-    public static void setTimestamp(long time) {
-        timestamp=time;
-    }
-
-    public static boolean IsTweetAnalyzed(long time){
-        return time>timestamp;
-        
-    } 
+     
         
     @Override
     protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
         long time=value.rawCells()[0].getTimestamp();
         System.out.println("hello");
-        System.out.println(timestamp);
         System.out.println(time);
         String q=Bytes.toString(value.getValue(CF, ATTR2));
         if (!q.equals("NO_QUERY")) {

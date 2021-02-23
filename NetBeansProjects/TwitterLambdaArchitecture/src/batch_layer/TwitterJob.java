@@ -79,11 +79,8 @@ public class TwitterJob {
     
     }    */
     public static void main(String[] args) throws Exception {
-        System.out.println("ciao");
         Configuration config = new Configuration();
-        //NLP.init();
-        //Configuration config = HBaseConfiguration.create();
-
+        
         config.set("fs.default.name", "hdfs://localhost:54310");
         config.set("mapred.job.tracker", "http://localhost:54311");
         config.set("mapreduce.framework.name", "yarn");
@@ -95,16 +92,6 @@ public class TwitterJob {
         config.set("hbase.rootdir", "hdfs://localhost:54310/hbase");
         config.set("mapreduce.task.timeout", "6000000");
 
-        //config.set("hadoop.registry.zk.quorum", "localhost:2222");
-        //config.set("hbase.zookeeper.property.maxClientCnxns","20000");
-        //config.setInt("mapreduce.job.reduces", 6);
-        //config.set("mapred.reduce.tasks.speculative.execution", "true");
-        //config.set("mapred.reduce.tasks", "6");
-        //config.set("ha.zookeeper.quorum", "127.0.0.1:2222");
-        //config.set("yarn.resourcemanager.zk-address", "127.0.0.1:2222");
-        //config.set("TwitterLambdaArchitecture.jar","/home/bernardo/NetBeansProjects/TwitterLambdaArchitecture/dist/TwitterLambdaArchitecture.jar");
-        //config.setInt("mapreduce.tasktracker.reduce.tasks.maximum", 8);
-        //config.setInt("mapred.tasktracker.reduce.tasks.maximum", 7);
         int c = 48;
         long InitExecution = System.currentTimeMillis();
         Thread.sleep(3000);
@@ -113,7 +100,7 @@ public class TwitterJob {
         System.out.println(EndBatchCycle - InitExecution);
         
         while ((EndBatchCycle - InitExecution) < 300000) {
-            Job job = Job.getInstance(config, "cirillo");
+            Job job = Job.getInstance(config, "TwitterJob");
             job.setJarByClass(TwitterJob.class);
             //Configuration config = HBaseConfiguration.create();
 
@@ -214,11 +201,8 @@ public class TwitterJob {
             job.setNumReduceTasks(3);
             job.setPartitionerClass(TwitterPartitioner.class);
 
-            //FileInputFormat.addInputPath(job, new Path("/home/bernardo/NetBeansProjects/TwitterLambdaArchitecture/src/input.txt"));
             FileOutputFormat.setOutputPath(job, new Path("output" + String.valueOf(c) + ".txt"));
             c += 1;
-            System.out.println("ciao3");
-            //System.exit(job.waitForCompletion(true) ? 0 : 1);
             boolean b = job.waitForCompletion(true);
             if (!b) {
                 throw new IOException("error with job!");
